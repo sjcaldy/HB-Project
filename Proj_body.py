@@ -1,7 +1,7 @@
 
-#still needs: figure out hit (store +1 and add to hand)
-#integrate scoring mechanism & print score
-#integrate win decision
+#figure out hit (store +1 and add to hand)
+#score fxn work with win decision and dealer stay at 17
+#win fxn broken
 
 def deal():
     import random
@@ -13,33 +13,45 @@ def deal():
     return deck
 
 deck = deal()
+player_hand = []
+dealer_hand = []
+player_score = 0
+dealer_score = 0
 
-def hand():
-    player_hand = []
-    dealer_hand = []
-    
-    while len(player_hand) < 2:
-        c = deck.pop()
-        player_hand.append(c)
+def hand(player, dealer):
+    #deal cards (2 first, then 1 by 1)
+    #can this be cleaned up?
 
-    while len(dealer_hand) < 2:
+    while len(dealer) < 2:
         d = deck.pop()
         dealer_hand.append(d)
 
-    print "player"
-    print player_hand
-    print "dealer"
-    print dealer_hand
+    while len(player) < 2:
+        c = deck.pop()
+        player_hand.append(c)
 
-    if len(player_hand) > 2:
+    print "DEALER"
+    print dealer_hand
+    dealer_score = score(dealer_hand)
+
+    print "PLAYER"
+    print player_hand
+    player_score = score(player_hand)
+    
+    #return player_score
+    #return dealer_score
+    hit_or_stay()
+
+    """if len(player_hand) >= 2:
         e = deck.pop()
         player_hand.append(e)
-        
-    if len(dealer_hand) > 2:
+        print player_hand   
+    if len(dealer_hand) >= 2: #and score <17
         f = deck.pop()
-        dealer_hand.append(f)
+        dealer_hand.append(f)"""
 
-def score(player_hand,dealer_hand):
+
+def score(hand):
 
     count_score = 0
     ace_count = 0
@@ -49,10 +61,10 @@ def score(player_hand,dealer_hand):
             ace_count += 1
         
     for b in hand:
-        if (b[0] == "J" or b[0] == "Q" or b[0] == "K" or b[0] == "T" and ace_count == 1) and len(hand) == 2:
-            print "blackjack"
+        if ((b[0] == "J" or b[0] == "Q" or b[0] == "K" or b[0] == "T") and ace_count == 1) and len(hand) == 2:
+            print "Blackjack!"
             break
-            #win fxn
+            win_decision()
 
     for c in hand:    
         if (c[0] == "J" or c[0] == "Q" or c[0] == "K" or c[0] == "T"):
@@ -68,45 +80,49 @@ def score(player_hand,dealer_hand):
                 count_score +=11
         
         
-#print count_score
+    print count_score
 
 def hit_or_stay():
 
-    decide = raw_input("hit or stay? ")
+    decide = raw_input("hit or stay? ").lower()
     
     if decide == "hit":
-        hand()
+        print "DEALER"
+        f = deck.pop()
+        dealer_hand.append(f)
+        print dealer_hand
+        print "PLAYER"
+        e = deck.pop()
+        player_hand.append(e)
+        print player_hand
     else:
         print "stay"
-        #win or lose decision
+        win_decision()
 
 def win_decision():
 
-    #player_hand = [10,9]
+    #draw option also
 
-    #dealer_hand = [10,10]
-
-    if sum(player_hand) > 21:
+    if player_score > 21:
     	print "Bust, dealer wins!"
-    elif sum(dealer_hand) > 21:
+    elif dealer_score > 21:
         print "Dealer bust, you win!"
-    elif sum(player_hand) > sum(dealer_hand):
+    elif player_score > dealer_score:
         print "You win!"
     else:
         print "Dealer wins!"
+    intro()
     
 def intro():
 
-    initiate = raw_input("Would you like to play blackjack Y/N? ")
+    initiate = raw_input("Would you like to play blackjack Y/N? ").upper()
 
     if initiate == "Y":
-        hand()
-        #print player_hand + "Player"
-        #print dealer_hand + "Dealer"
-        #score(player_hand)
-        #score(dealer_hand)
+        hand(player_hand, dealer_hand)
         hit_or_stay()
     else:
         print "OK"
+        #weirdness here
+        
     
 intro()
